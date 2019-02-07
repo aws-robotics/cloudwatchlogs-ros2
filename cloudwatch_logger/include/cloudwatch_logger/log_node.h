@@ -14,28 +14,24 @@
  */
 
 #include <aws_common/sdk_utils/client_configuration_provider.h>
-#include <aws_ros1_common/sdk_utils/logging/aws_ros_logger.h>
-#include <aws_ros1_common/sdk_utils/ros1_node_parameter_reader.h>
+#include <aws_ros2_common/sdk_utils/logging/aws_ros_logger.h>
+#include <aws_ros2_common/sdk_utils/ros2_node_parameter_reader.h>
 #include <cloudwatch_logs_common/log_manager.h>
 #include <cloudwatch_logs_common/log_manager_factory.h>
 #include <cloudwatch_logs_common/log_publisher.h>
-#include <ros/ros.h>
-#include <rosgraph_msgs/Log.h>
+#include <rclcpp/rclcpp.hpp>
+#include <rcl_interfaces/msg/log.hpp>
 
 namespace Aws {
 namespace CloudWatchLogs {
 namespace Utils {
 
-class LogNode
-{
+class LogNode: public rclcpp::Node {
 public:
   /**
    * @brief Creates a new CloudWatchLogNode
-   *
-   * @param min_log_severity the minimum log severity level defined in the configuration file
-   *                         logs with severity level equal or above get sent to CloudWatch Logs
    */
-  explicit LogNode(int8_t min_log_severity);
+  LogNode(const std::string & node_name);
 
   /**
    *  @brief Tears down a AWSCloudWatchLogNode object
@@ -49,16 +45,22 @@ public:
    * @param log_stream log stream name
    * @param config aws client configuration object
    * @param sdk_options aws sdk options
+   * @param min_log_severity the minimum log severity level defined in the configuration file
+   *                         logs with severity level equal or above get sent to CloudWatch Logs
    */
-  void Initialize(const std::string & log_group, const std::string & log_stream,
-                  Aws::Client::ClientConfiguration & config, Aws::SDKOptions & sdk_options);
+  void Initialize(
+      const std::string & log_group,
+      const std::string & log_stream,
+      Aws::Client::ClientConfiguration & config,
+      Aws::SDKOptions & sdk_options,
+      int8_t min_log_severity);
 
   /**
    * @brief Emits RecordLog using the log manager
    *
    * @param log_msg A log message from the subscribed topic(s)
    */
-  void RecordLogs(const rosgraph_msgs::Log::ConstPtr & log_msg);
+  void RecordLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg);
 
   /**
    * @brief Trigger the log manager to call its Service function to publish logs to cloudwatch
@@ -66,11 +68,11 @@ public:
    *
    * @param timer A ros timer
    */
-  void TriggerLogPublisher(const ros::TimerEvent &);
+  void TriggerLogPublisher();
 
 private:
   bool ShouldSendToCloudWatchLogs(const int8_t log_severity_level);
-  const std::string FormatLogs(const rosgraph_msgs::Log::ConstPtr & log_msg);
+  const std::string FormatLogs(const rcl_interfaces::msg::Log::SharedPtr & log_msg);
   std::shared_ptr<Aws::CloudWatchLogs::LogManager> log_manager_;
   int8_t min_log_severity_;
 };

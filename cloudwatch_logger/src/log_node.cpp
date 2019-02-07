@@ -16,33 +16,38 @@
 #include <aws/core/utils/logging/AWSLogging.h>
 #include <aws/core/utils/logging/LogMacros.h>
 #include <aws_common/sdk_utils/client_configuration_provider.h>
-#include <aws_ros1_common/sdk_utils/logging/aws_ros_logger.h>
-#include <aws_ros1_common/sdk_utils/ros1_node_parameter_reader.h>
+#include <aws_ros2_common/sdk_utils/logging/aws_ros_logger.h>
+#include <aws_ros2_common/sdk_utils/ros2_node_parameter_reader.h>
 #include <cloudwatch_logger/log_node.h>
 #include <cloudwatch_logs_common/log_manager.h>
 #include <cloudwatch_logs_common/log_manager_factory.h>
 #include <cloudwatch_logs_common/log_publisher.h>
-#include <ros/ros.h>
-#include <rosgraph_msgs/Log.h>
+#include <rclcpp/rclcpp.hpp>
+#include <rcl_interfaces/msg/log.hpp>
 
 using namespace Aws::CloudWatchLogs::Utils;
 
-LogNode::LogNode(int8_t min_log_severity)
+LogNode::LogNode(const std::string & node_name) : rclcpp::Node(node_name)
 {
   this->log_manager_ = nullptr;
-  this->min_log_severity_ = min_log_severity;
+  this->min_log_severity_ = rcl_interfaces::msg::Log::DEBUG;
 }
 
 LogNode::~LogNode() { this->log_manager_ = nullptr; }
 
-void LogNode::Initialize(const std::string & log_group, const std::string & log_stream,
-                         Aws::Client::ClientConfiguration & config, Aws::SDKOptions & sdk_options)
+void LogNode::Initialize(
+    const std::string & log_group,
+    const std::string & log_stream,
+    Aws::Client::ClientConfiguration & config,
+    Aws::SDKOptions & sdk_options,
+    const int8_t min_log_severity)
 {
   LogManagerFactory factory;
   this->log_manager_ = factory.CreateLogManager(log_group, log_stream, config, sdk_options);
+  this->min_log_severity_ = min_log_severity;
 }
 
-void LogNode::RecordLogs(const rosgraph_msgs::Log::ConstPtr & log_msg)
+void LogNode::RecordLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg)
 {
   if (log_msg->name != "/cloudwatch_logger" && log_msg->name != "/cloudwatch_metrics_collector") {
     if (nullptr == this->log_manager_) {
@@ -56,32 +61,35 @@ void LogNode::RecordLogs(const rosgraph_msgs::Log::ConstPtr & log_msg)
   }
 }
 
-void LogNode::TriggerLogPublisher(const ros::TimerEvent &) { this->log_manager_->Service(); }
+void LogNode::TriggerLogPublisher() { this->log_manager_->Service(); }
 
 bool LogNode::ShouldSendToCloudWatchLogs(const int8_t log_severity_level)
 {
   return log_severity_level >= this->min_log_severity_;
 }
 
-const std::string LogNode::FormatLogs(const rosgraph_msgs::Log::ConstPtr & log_msg)
+const std::string LogNode::FormatLogs(const rcl_interfaces::msg::Log::SharedPtr & log_msg)
 {
   std::stringstream ss;
-  ss << log_msg->header.stamp << " ";
+  ss << std::chrono::duration_cast<std::chrono::duration<double>>(
+      std::chrono::seconds(log_msg->stamp.sec) +
+      std::chrono::nanoseconds(log_msg->stamp.nanosec)
+      ).count() << " ";
 
   switch (log_msg->level) {
-    case rosgraph_msgs::Log::FATAL:
+    case rcl_interfaces::msg::Log::FATAL:
       ss << "FATAL ";
       break;
-    case rosgraph_msgs::Log::ERROR:
+    case rcl_interfaces::msg::Log::ERROR:
       ss << "ERROR ";
       break;
-    case rosgraph_msgs::Log::WARN:
+    case rcl_interfaces::msg::Log::WARN:
       ss << "WARN ";
       break;
-    case rosgraph_msgs::Log::DEBUG:
+    case rcl_interfaces::msg::Log::DEBUG:
       ss << "DEBUG ";
       break;
-    case rosgraph_msgs::Log::INFO:
+    case rcl_interfaces::msg::Log::INFO:
       ss << "INFO ";
       break;
     default:
@@ -89,19 +97,8 @@ const std::string LogNode::FormatLogs(const rosgraph_msgs::Log::ConstPtr & log_m
   }
   ss << "[node name: " << log_msg->name << "] ";
 
-  ss << "[topics: ";
-  std::vector<std::string>::const_iterator it = log_msg->topics.begin();
-  std::vector<std::string>::const_iterator end = log_msg->topics.end();
-  for (; it != end; ++it) {
-    const std::string & topic = *it;
-
-    if (it != log_msg->topics.begin()) {
-      ss << ", ";
-    }
-
-    ss << topic;
-  }
-  ss << "] " << log_msg->msg << "\n";
+  ss << log_msg->msg << "\n";
+  std::cout << log_msg->msg << std::endl;
 
   return ss.str();
 }
