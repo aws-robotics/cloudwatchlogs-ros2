@@ -19,62 +19,97 @@
 #include <aws_ros2_common/sdk_utils/logging/aws_ros_logger.h>
 #include <aws_ros2_common/sdk_utils/ros2_node_parameter_reader.h>
 #include <cloudwatch_logger/log_node.h>
-#include <cloudwatch_logs_common/log_manager.h>
-#include <cloudwatch_logs_common/log_manager_factory.h>
+#include <cloudwatch_logs_common/log_batcher.h>
+#include <cloudwatch_logs_common/log_service_factory.h>
 #include <cloudwatch_logs_common/log_publisher.h>
+#include <cloudwatch_logs_common/log_service.h>
 #include <rclcpp/rclcpp.hpp>
-#include <rcl_interfaces/msg/log.hpp>
 
 using namespace Aws::CloudWatchLogs::Utils;
 
-LogNode::LogNode(const std::string & node_name) : rclcpp::Node(node_name)
+LogNode::LogNode(int8_t min_log_severity, std::unordered_set<std::string> ignore_nodes)
+  : ignore_nodes_(std::move(ignore_nodes))
 {
-  this->log_manager_ = nullptr;
-  this->min_log_severity_ = rcl_interfaces::msg::Log::DEBUG;
+  this->log_service_ = nullptr;
+  this->min_log_severity_ = min_log_severity;
 }
 
-LogNode::~LogNode() { this->log_manager_ = nullptr; }
+LogNode::~LogNode() { this->log_service_ = nullptr; }
 
-void LogNode::Initialize(
-    const std::string & log_group,
-    const std::string & log_stream,
-    Aws::Client::ClientConfiguration & config,
-    Aws::SDKOptions & sdk_options,
-    const int8_t min_log_severity)
+void LogNode::Initialize(const std::string & log_group, const std::string & log_stream,
+                         const Aws::Client::ClientConfiguration & config, Aws::SDKOptions & sdk_options,
+                         const Aws::CloudWatchLogs::CloudWatchOptions & cloudwatch_options,
+                         std::shared_ptr<LogServiceFactory> factory)
 {
-  LogManagerFactory factory;
-  this->log_manager_ = factory.CreateLogManager(log_group, log_stream, config, sdk_options);
-  this->min_log_severity_ = min_log_severity;
+  this->log_service_ = factory->CreateLogService(log_group, log_stream, config, sdk_options, cloudwatch_options);
+}
+
+bool LogNode::checkIfOnline(std_srvs::srv::Trigger::Request & request, std_srvs::srv::Trigger::Response & response)
+{
+  // AWS_LOGSTREAM_DEBUG(__func__, "received request " << request);
+
+  if (!this->log_service_) {
+    response.success = false;
+    response.message = "The LogService is not initialized";
+    return true;
+  }
+
+  response.success = this->log_service_->isConnected();
+  response.message = response.success ? "The LogService is connected" : "The LogService is not connected";
+
+  return true;
+}
+
+bool LogNode::start()
+{
+  bool is_started = true;
+  if (this->log_service_) {
+    is_started &= this->log_service_->start();
+  }
+  is_started &= Service::start();
+  return is_started;
+}
+
+bool LogNode::shutdown()
+{
+  bool is_shutdown = Service::shutdown();
+  if (this->log_service_) {
+    is_shutdown &= this->log_service_->shutdown();
+  }
+  return is_shutdown;
 }
 
 void LogNode::RecordLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg)
 {
-  if (log_msg->name != "/cloudwatch_logger" && log_msg->name != "/cloudwatch_metrics_collector") {
-    if (nullptr == this->log_manager_) {
+  if (0 == this->ignore_nodes_.count(log_msg->name)) {
+    if (nullptr == this->log_service_) {
       AWS_LOG_ERROR(__func__,
                     "Cannot publish CloudWatch logs with NULL CloudWatch LogManager instance.");
       return;
     }
     if (ShouldSendToCloudWatchLogs(log_msg->level)) {
-      this->log_manager_->RecordLog(FormatLogs(log_msg));
+      auto message = FormatLogs(log_msg);
+      this->log_service_->batchData(message);
     }
   }
 }
 
-void LogNode::TriggerLogPublisher() { this->log_manager_->Service(); }
+void LogNode::TriggerLogPublisher()
+{
+  this->log_service_->publishBatchedData();
+}
 
 bool LogNode::ShouldSendToCloudWatchLogs(const int8_t log_severity_level)
 {
   return log_severity_level >= this->min_log_severity_;
 }
 
-const std::string LogNode::FormatLogs(const rcl_interfaces::msg::Log::SharedPtr & log_msg)
+const std::string LogNode::FormatLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg)
 {
   std::stringstream ss;
   ss << std::chrono::duration_cast<std::chrono::duration<double>>(
-      std::chrono::seconds(log_msg->stamp.sec) +
-      std::chrono::nanoseconds(log_msg->stamp.nanosec)
-      ).count() << " ";
+       std::chrono::seconds(log_msg->stamp.sec) + std::chrono::nanoseconds(log_msg->stamp.nanosec)
+     ).count() << " ";
 
   switch (log_msg->level) {
     case rcl_interfaces::msg::Log::FATAL:
