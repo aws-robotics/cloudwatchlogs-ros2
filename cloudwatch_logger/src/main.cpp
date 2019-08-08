@@ -31,7 +31,11 @@ constexpr char kNodeName[] = "cloudwatch_logger";
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::Node::SharedPtr nh = std::make_shared<rclcpp::Node>(kNodeName);
+
+  rclcpp::NodeOptions node_options;
+  node_options.allow_undeclared_parameters(true);
+  node_options.automatically_declare_parameters_from_overrides(true);
+  rclcpp::Node::SharedPtr nh = std::make_shared<rclcpp::Node>(kNodeName, node_options);
 
   Aws::Utils::Logging::InitializeAWSLogging(
     Aws::MakeShared<Aws::Utils::Logging::AWSROSLogger>(

@@ -24,12 +24,12 @@ set(CLOUDWATCH_LOGGER_LIBRARY_TARGET ${PROJECT_NAME}_lib)
 ## Build ##
 ###########
 
-## Specify additional locations of header files
-
 add_library(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
         src/log_node.cpp
         src/log_node_param_helper.cpp
         )
+
+## Specify additional locations of header files
 include_directories(
         include
         ${rclcpp_INCLUDE_DIRS}
@@ -64,12 +64,10 @@ target_link_libraries(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET} ${rclcpp_LIBRARIES})
-ament_target_dependencies(${PROJECT_NAME}
-        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-        )
-
 ## Specify libraries to link a library or executable target against
+target_link_libraries(${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET} ${rclcpp_LIBRARIES})
+ament_target_dependencies(${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET})
+
 
 #############
 ## Install ##
