@@ -27,5 +27,7 @@ def generate_launch_description():
         Node(package='cloudwatch_logger',
              node_executable='cloudwatch_logger',
              parameters=[parameters_file_path],
+             # workaround until https://github.com/ros2/rmw_fastrtps/issues/265 is resolved
+             arguments=["__log_disable_rosout:=true"],
              output='screen'),
 ])

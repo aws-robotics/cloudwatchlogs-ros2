@@ -16,13 +16,13 @@ cloudwatch_logger:
 
     # whether to subscribe to the rosout_agg topic to get logs
     # default value is: true
-    sub_to_rosout: false
+    sub_to_rosout: true
 
     # other topics to subscribe to get logs
     # e.g. subscribe to two topics, one is named topic1, the other is named topic2
     #      topics: ['topic1', 'topic2']
     # default value is: empty list
-    topics: ["cwlogs"]
+    # topics: []
 
     # list of node names to ignore logs from
     # e.g. To ignore all logs from a node named 'Talker' you would use the following configuration:

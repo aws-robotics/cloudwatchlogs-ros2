@@ -27,7 +27,7 @@ namespace CloudWatchLogs {
 namespace Utils {
 
 constexpr int kNodeSubQueueSize = 100;
-constexpr char kNodeRosoutAggregatedTopicName[] = "rosout_agg";
+constexpr char kNodeRosoutAggregatedTopicName[] = "rosout";
 
 constexpr char kNodeParamLogStreamNameKey[] = "log_stream_name";
 constexpr char kNodeParamPublishFrequencyKey[] = "publish_frequency";
