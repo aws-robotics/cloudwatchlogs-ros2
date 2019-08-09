@@ -31,7 +31,7 @@ using ::testing::Return;
 using ::testing::Invoke;
 using Aws::AwsError;
 
-class ParameterReaderMock : public ParameterReaderInterface 
+class ParameterReaderMock : public ParameterReaderInterface
 {
 public:
   MOCK_CONST_METHOD2(ReadParam, Aws::AwsError(const ParameterPath &, std::vector<std::string> &));
@@ -51,205 +51,205 @@ protected:
 
 TEST_F(LogNodeParamHelperFixture, TestReadPublishFrequency)
 {
-    double expected_param_value = 42.0;
+  double expected_param_value = 42.0;
 
-    {
-      InSequence read_param_seq;
+  {
+    InSequence read_param_seq;
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double&>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE)); 
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double&>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND)); 
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double&>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
-        );
-    }
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamPublishFrequencyKey)), A<double &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
+    );
+  }
 
-    double param = -1; 
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadPublishFrequency(param_reader_, param));
-    EXPECT_EQ(kNodePublishFrequencyDefaultValue, param);
+  double param = -1;
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadPublishFrequency(param_reader_, param));
+  EXPECT_EQ(kNodePublishFrequencyDefaultValue, param);
 
-    param = -1; 
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadPublishFrequency(param_reader_, param));
-    EXPECT_EQ(kNodePublishFrequencyDefaultValue, param);
-    
-    param = -1; 
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadPublishFrequency(param_reader_, param));
-    EXPECT_EQ(expected_param_value, param);
+  param = -1;
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadPublishFrequency(param_reader_, param));
+  EXPECT_EQ(kNodePublishFrequencyDefaultValue, param);
+
+  param = -1;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadPublishFrequency(param_reader_, param));
+  EXPECT_EQ(expected_param_value, param);
 }
 
 TEST_F(LogNodeParamHelperFixture, TestReadLogGroup)
 {
-    std::string expected_param_value = "MTc4MGNjOTc3ZTA1OTY";
+  std::string expected_param_value = "MTc4MGNjOTc3ZTA1OTY";
 
-    {
-      InSequence read_param_seq;
+  {
+    InSequence read_param_seq;
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
-        );
-    }
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogGroupNameKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
+    );
+  }
 
-    std::string param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadLogGroup(param_reader_, param));
-    EXPECT_STREQ(kNodeLogGroupNameDefaultValue, param.c_str());
+  std::string param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadLogGroup(param_reader_, param));
+  EXPECT_STREQ(kNodeLogGroupNameDefaultValue, param.c_str());
 
-    param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadLogGroup(param_reader_, param));
-    EXPECT_STREQ(kNodeLogGroupNameDefaultValue, param.c_str());
-    
-    param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadLogGroup(param_reader_, param));
-    EXPECT_STREQ(expected_param_value.c_str(), param.c_str());
+  param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadLogGroup(param_reader_, param));
+  EXPECT_STREQ(kNodeLogGroupNameDefaultValue, param.c_str());
+
+  param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadLogGroup(param_reader_, param));
+  EXPECT_STREQ(expected_param_value.c_str(), param.c_str());
 }
 
 TEST_F(LogNodeParamHelperFixture, TestReadLogStream)
 {
-    std::string expected_param_value = "MGQyNTU3N2I3NzU1ZGIyNWQzMTZhYmVh";
+  std::string expected_param_value = "MGQyNTU3N2I3NzU1ZGIyNWQzMTZhYmVh";
 
-    {
-      InSequence read_param_seq;
+  {
+    InSequence read_param_seq;
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
-        );
-    }
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamLogStreamNameKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
+    );
+  }
 
-    std::string param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadLogStream(param_reader_, param));
-    EXPECT_STREQ(kNodeLogStreamNameDefaultValue, param.c_str());
+  std::string param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadLogStream(param_reader_, param));
+  EXPECT_STREQ(kNodeLogStreamNameDefaultValue, param.c_str());
 
-    param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadLogStream(param_reader_, param));
-    EXPECT_STREQ(kNodeLogStreamNameDefaultValue, param.c_str());
-    
-    param = ""; 
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadLogStream(param_reader_, param));
-    EXPECT_STREQ(expected_param_value.c_str(), param.c_str());
+  param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadLogStream(param_reader_, param));
+  EXPECT_STREQ(kNodeLogStreamNameDefaultValue, param.c_str());
+
+  param = "";
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadLogStream(param_reader_, param));
+  EXPECT_STREQ(expected_param_value.c_str(), param.c_str());
 }
 
 TEST_F(LogNodeParamHelperFixture, TestReadSubscribeToRosout)
 {
-    bool expected_param_value = ! kNodeSubscribeToRosoutDefaultValue;
+  bool expected_param_value = ! kNodeSubscribeToRosoutDefaultValue;
 
-    {
-      InSequence read_param_seq;
+  {
+    InSequence read_param_seq;
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
-        );
-    }
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamSubscribeToRosoutKey)), A<bool &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>(expected_param_value), Return(AwsError::AWS_ERR_OK))
+    );
+  }
 
-    bool param = ! kNodeSubscribeToRosoutDefaultValue;
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadSubscribeToRosout(param_reader_, param));
-    EXPECT_EQ(kNodeSubscribeToRosoutDefaultValue, param);
+  bool param = ! kNodeSubscribeToRosoutDefaultValue;
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadSubscribeToRosout(param_reader_, param));
+  EXPECT_EQ(kNodeSubscribeToRosoutDefaultValue, param);
 
-    param = ! kNodeSubscribeToRosoutDefaultValue;; 
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadSubscribeToRosout(param_reader_, param));
-    EXPECT_EQ(kNodeSubscribeToRosoutDefaultValue, param);
-    
-    param = ! kNodeSubscribeToRosoutDefaultValue; 
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadSubscribeToRosout(param_reader_, param));
-    EXPECT_EQ(expected_param_value, param);
+  param = ! kNodeSubscribeToRosoutDefaultValue;;
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadSubscribeToRosout(param_reader_, param));
+  EXPECT_EQ(kNodeSubscribeToRosoutDefaultValue, param);
+
+  param = ! kNodeSubscribeToRosoutDefaultValue;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadSubscribeToRosout(param_reader_, param));
+  EXPECT_EQ(expected_param_value, param);
 }
 
 TEST_F(LogNodeParamHelperFixture, TestReadReadMinLogVerbosity)
 {
-    {
-      InSequence read_param_seq;
+  {
+    InSequence read_param_seq;
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND)); 
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("DEBUG"), Return(AwsError::AWS_ERR_OK))
-        );
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("DEBUG"), Return(AwsError::AWS_ERR_OK))
+    );
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("INFO"), Return(AwsError::AWS_ERR_OK))
-        );
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("INFO"), Return(AwsError::AWS_ERR_OK))
+    );
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("WARN"), Return(AwsError::AWS_ERR_OK))
-        );
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("WARN"), Return(AwsError::AWS_ERR_OK))
+    );
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("ERROR"), Return(AwsError::AWS_ERR_OK))
-        );
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("ERROR"), Return(AwsError::AWS_ERR_OK))
+    );
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("FATAL"), Return(AwsError::AWS_ERR_OK))
-        );
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("FATAL"), Return(AwsError::AWS_ERR_OK))
+    );
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
-        .WillOnce(
-          DoAll(SetArgReferee<1>("xNDlhZmJmNGM"), Return(AwsError::AWS_ERR_OK))
-        );      
-    }
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamMinLogVerbosityKey)), A<std::string &>()))
+    .WillOnce(
+      DoAll(SetArgReferee<1>("xNDlhZmJmNGM"), Return(AwsError::AWS_ERR_OK))
+    );
+  }
 
-    int8_t param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
+  int8_t param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(rosgraph_msgs::Log::DEBUG, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(rcl_interfaces::msg::Log::DEBUG, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(rosgraph_msgs::Log::INFO, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(rcl_interfaces::msg::Log::INFO, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(rosgraph_msgs::Log::WARN, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(rcl_interfaces::msg::Log::WARN, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(rosgraph_msgs::Log::ERROR, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(rcl_interfaces::msg::Log::ERROR, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(rosgraph_msgs::Log::FATAL, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(rcl_interfaces::msg::Log::FATAL, param);
 
-    param = rosgraph_msgs::Log::FATAL + 1 ;
-    EXPECT_EQ(AwsError::AWS_ERR_PARAM, ReadMinLogVerbosity(param_reader_, param));
-    EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
+  param = rcl_interfaces::msg::Log::FATAL + 1 ;
+  EXPECT_EQ(AwsError::AWS_ERR_PARAM, ReadMinLogVerbosity(param_reader_, param));
+  EXPECT_EQ(kNodeMinLogVerbosityDefaultValue, param);
 }
 
 AwsError MockReadParamAddStringToList(const ParameterPath & param_path, std::vector<std::string> & out)
@@ -261,29 +261,28 @@ AwsError MockReadParamAddStringToList(const ParameterPath & param_path, std::vec
 
 TEST_F(LogNodeParamHelperFixture, TestReadIgnoreNodesSet)
 {
+  {
+    InSequence read_param_seq;
 
-    {
-      InSequence read_param_seq;
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
+    .WillOnce(Return(AwsError::AWS_ERR_FAILURE));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
-        .WillOnce(Return(AwsError::AWS_ERR_FAILURE)); 
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
+    .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND));
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
-        .WillOnce(Return(AwsError::AWS_ERR_NOT_FOUND)); 
+    EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
+    .WillOnce(Invoke(MockReadParamAddStringToList));
+  }
 
-      EXPECT_CALL(*param_reader_, ReadParam(Eq(ParameterPath(kNodeParamIgnoreNodesKey)), A<std::vector<std::string>&>()))
-        .WillOnce(Invoke(MockReadParamAddStringToList));
-    }
+  std::unordered_set<std::string> param;
+  EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadIgnoreNodesSet(param_reader_, param));
+  EXPECT_EQ(0, param.size());
 
-    std::unordered_set<std::string> param; 
-    EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadIgnoreNodesSet(param_reader_, param));
-    EXPECT_EQ(0, param.size());
+  EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadIgnoreNodesSet(param_reader_, param));
+  EXPECT_EQ(0, param.size());
 
-    EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadIgnoreNodesSet(param_reader_, param));
-    EXPECT_EQ(0, param.size());
-    
-    EXPECT_EQ(AwsError::AWS_ERR_OK, ReadIgnoreNodesSet(param_reader_, param));
-    EXPECT_EQ(1, param.count("String1"));
+  EXPECT_EQ(AwsError::AWS_ERR_OK, ReadIgnoreNodesSet(param_reader_, param));
+  EXPECT_EQ(1, param.count("String1"));
 }
 
 int main(int argc, char ** argv)

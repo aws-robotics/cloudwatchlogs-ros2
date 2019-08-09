@@ -7,6 +7,8 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 find_package(ament_cmake_ros REQUIRED)
+find_package(ament_cmake_gtest REQUIRED)
+find_package(ament_cmake_gmock REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcl_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -42,7 +44,6 @@ ament_target_dependencies(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
 ## Specify additional locations of header files
 include_directories(
         include
-        ${AWSSDK_INCLUDE_DIRS}
         )
 
 ## Declare a C++ executable
@@ -57,20 +58,23 @@ target_link_libraries(${PROJECT_NAME}
 #############
 ## Install ##
 #############
+
 install(TARGETS ${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME})
-install(
-        DIRECTORY include/
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION lib/${PROJECT_NAME}
+        )
+install(DIRECTORY include/
         DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-install(
-        DIRECTORY config/
-        DESTINATION share/${PROJECT_NAME}/config)
-install(
-        DIRECTORY launch/
-        DESTINATION share/${PROJECT_NAME}/launch)
+        FILES_MATCHING PATTERN "*.h"
+        )
+install(DIRECTORY config/
+        DESTINATION share/${PROJECT_NAME}/config
+        )
+install(DIRECTORY launch/
+        DESTINATION share/${PROJECT_NAME}/launch
+        )
+
 ament_export_include_directories(include)
 
 ament_export_dependencies(ament_cmake)
@@ -83,3 +87,24 @@ ament_export_dependencies(dataflow_lite)
 ament_export_dependencies(file_management)
 
 ament_package()
+
+
+#############
+## Tests ##
+#############
+
+ament_add_gmock(test_log_node_param_helper
+        test/log_node_param_helper_test.cpp
+        )
+target_include_directories(test_log_node_param_helper PRIVATE
+        include
+        ${cloudwatch_logs_common_INCLUDE_DIRS}
+        ${dataflow_lite_INCLUDE_DIRS}
+        ${file_management_INCLUDE_DIRS}
+        ${AWSSDK_INCLUDE_DIRS}
+        ${aws_common_INCLUDE_DIRS}
+        ${rclcpp_INCLUDE_DIRS}
+        )
+target_link_libraries(test_log_node_param_helper
+        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+        )
