@@ -18,7 +18,6 @@ find_package(file_management REQUIRED)
 
 set(CLOUDWATCH_LOGGER_LIBRARY_TARGET ${PROJECT_NAME}_lib)
 
-#link_directories("${AWSSDK_LIB_DIR}")
 
 ###########
 ## Build ##
@@ -28,45 +27,31 @@ add_library(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
         src/log_node.cpp
         src/log_node_param_helper.cpp
         )
-
+ament_target_dependencies(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+        rclcpp
+        rcl_interfaces
+        std_msgs
+        std_srvs
+        aws_common
+        aws_ros2_common
+        AWSSDK
+        cloudwatch_logs_common
+        dataflow_lite
+        file_management
+        )
 ## Specify additional locations of header files
 include_directories(
         include
-        ${rclcpp_INCLUDE_DIRS}
-        ${rcl_interfaces_INCLUDE_DIRS}
-        ${std_msgs_INCLUDE_DIRS}
-        ${std_srvs_INCLUDE_DIRS}
-        ${aws_common_INCLUDE_DIRS}
-        ${aws_ros2_common_INCLUDE_DIRS}
         ${AWSSDK_INCLUDE_DIRS}
-        ${cloudwatch_logs_common_INCLUDE_DIRS}
-        ${dataflow_lite_INCLUDE_DIRS}
-        ${file_management_INCLUDE_DIRS}
-        )
-ament_target_dependencies(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-        rclcpp
-        rosidl_typesupport_cpp
-        aws_common
-        aws_ros2_common
-        cloudwatch_logs_common
-        )
-target_link_libraries(${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-        ${rclcpp_LIBRARIES}
-        ${rcl_interfaces_LIBRARIES}
-        ${std_msgs_LIBRARIES}
-        ${std_srvs_LIBRARIES}
-        ${aws_common_LIBRARIES}
-        ${aws_ros2_common_LIBRARIES}
-        ${cloudwatch_logs_common_LIBRARIES}
-        ${dataflow_lite_LIBRARIES}
-        ${file_management_LIBRARIES}
         )
 
 ## Declare a C++ executable
-add_executable(${PROJECT_NAME} src/main.cpp)
-## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET} ${rclcpp_LIBRARIES})
-ament_target_dependencies(${PROJECT_NAME} ${CLOUDWATCH_LOGGER_LIBRARY_TARGET})
+add_executable(${PROJECT_NAME}
+        src/main.cpp
+        )
+target_link_libraries(${PROJECT_NAME}
+        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+        )
 
 
 #############
