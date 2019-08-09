@@ -276,13 +276,13 @@ TEST_F(LogNodeParamHelperFixture, TestReadIgnoreNodesSet)
 
   std::unordered_set<std::string> param;
   EXPECT_EQ(AwsError::AWS_ERR_FAILURE, ReadIgnoreNodesSet(param_reader_, param));
-  EXPECT_EQ(0, param.size());
+  EXPECT_EQ(0u, param.size());
 
   EXPECT_EQ(AwsError::AWS_ERR_NOT_FOUND, ReadIgnoreNodesSet(param_reader_, param));
-  EXPECT_EQ(0, param.size());
+  EXPECT_EQ(0u, param.size());
 
   EXPECT_EQ(AwsError::AWS_ERR_OK, ReadIgnoreNodesSet(param_reader_, param));
-  EXPECT_EQ(1, param.count("String1"));
+  EXPECT_EQ(1u, param.count("String1"));
 }
 
 int main(int argc, char ** argv)

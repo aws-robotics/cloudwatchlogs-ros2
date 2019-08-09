@@ -44,7 +44,7 @@ void LogNode::Initialize(const std::string & log_group, const std::string & log_
   this->log_service_ = factory->CreateLogService(log_group, log_stream, config, sdk_options, cloudwatch_options);
 }
 
-bool LogNode::checkIfOnline(std_srvs::srv::Trigger::Request & request, std_srvs::srv::Trigger::Response & response)
+bool LogNode::checkIfOnline(std_srvs::srv::Trigger::Request & /*request*/, std_srvs::srv::Trigger::Response & response)
 {
   // AWS_LOGSTREAM_DEBUG(__func__, "received request " << request);
 
@@ -83,8 +83,8 @@ void LogNode::RecordLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg)
 {
   if (0 == this->ignore_nodes_.count(log_msg->name)) {
     if (nullptr == this->log_service_) {
-      AWS_LOG_ERROR(__func__,
-                    "Cannot publish CloudWatch logs with NULL CloudWatch LogManager instance.");
+      AWS_LOG_ERROR(__func__, "Cannot publish CloudWatch logs with "
+                    "NULL Aws::CloudWatchLogs::LogService instance.");
       return;
     }
     if (ShouldSendToCloudWatchLogs(log_msg->level)) {

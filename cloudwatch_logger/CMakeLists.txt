@@ -6,6 +6,23 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+# Enable strict compiler flags if possible.
+include(CheckCXXCompilerFlag)
+# Removed -Wmissing-declarations until gmock is ignored
+# removed -Werror=pedantic until ros.h is fixed
+set(FLAGS -Wno-long-long -Wall -Wextra -Wcast-align -Wcast-qual -Wformat -Wwrite-strings)
+foreach(FLAG ${FLAGS})
+  check_cxx_compiler_flag(${FLAG} R${FLAG})
+  if(${R${FLAG}})
+    set(WARNING_CXX_FLAGS "${WARNING_CXX_FLAGS} ${FLAG}")
+  endif()
+endforeach()
+
+if(NOT DEFINED CXX_DISABLE_WERROR)
+  set(WARNING_CXX_FLAGS "-Werror ${WARNING_CXX_FLAGS}")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_CXX_FLAGS}")
+
 find_package(ament_cmake_ros REQUIRED)
 find_package(ament_cmake_gtest REQUIRED)
 find_package(ament_cmake_gmock REQUIRED)
