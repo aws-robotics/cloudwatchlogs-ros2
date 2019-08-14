@@ -7,20 +7,26 @@
   <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
   <license>Apache 2.0</license>
   <url>http://wiki.ros.org/cloudwatch_logger</url>
+  
   <buildtool_depend>ament_cmake</buildtool_depend>
+  
   <build_depend>cloudwatch_logs_common</build_depend>
   <build_depend>aws_common</build_depend>
   <build_depend>aws_ros2_common</build_depend>
   <build_depend>rclcpp</build_depend>
   <build_depend>rcl_interfaces</build_depend>
+  <build_depend>std_srvs</build_depend>
+  
   <build_export_depend>cloudwatch_logs_common</build_export_depend>
   <build_export_depend>aws_common</build_export_depend>
   <build_export_depend>aws_ros2_common</build_export_depend>
   <build_export_depend>rclcpp</build_export_depend>
+  
   <exec_depend>cloudwatch_logs_common</exec_depend>
   <exec_depend>aws_common</exec_depend>
   <exec_depend>aws_ros2_common</exec_depend>
   <exec_depend>rclcpp</exec_depend>
+  
   <export>
     <build_type>ament_cmake</build_type>
   </export>
