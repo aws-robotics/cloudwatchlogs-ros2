@@ -110,6 +110,22 @@ ament_package()
 ## Tests ##
 #############
 
+ament_add_gmock(test_log_node
+        test/log_node_test.cpp
+        )
+target_include_directories(test_log_node PRIVATE
+        include
+        ${cloudwatch_logs_common_INCLUDE_DIRS}
+        ${dataflow_lite_INCLUDE_DIRS}
+        ${file_management_INCLUDE_DIRS}
+        ${AWSSDK_INCLUDE_DIRS}
+        ${aws_common_INCLUDE_DIRS}
+        ${rclcpp_INCLUDE_DIRS}
+        )
+target_link_libraries(test_log_node
+        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+        )
+
 ament_add_gmock(test_log_node_param_helper
         test/log_node_param_helper_test.cpp
         )
