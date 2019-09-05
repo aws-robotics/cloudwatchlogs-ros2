@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <package format="3">
   <name>cloudwatch_logger</name>
-  <version>1.1.0</version>
+  <version>3.0.0</version>
   <description>CloudWatch Logger node for publishing logs to AWS CloudWatch Logs</description>
   <author email="ros-contributions@amazon.com">AWS RoboMaker</author>
   <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
@@ -21,7 +21,9 @@
   <build_export_depend>aws_common</build_export_depend>
   <build_export_depend>aws_ros2_common</build_export_depend>
   <build_export_depend>rclcpp</build_export_depend>
-  
+
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>launch</exec_depend>
   <exec_depend>cloudwatch_logs_common</exec_depend>
   <exec_depend>aws_common</exec_depend>
   <exec_depend>aws_ros2_common</exec_depend>
