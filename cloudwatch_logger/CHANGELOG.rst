@@ -2,8 +2,8 @@
 Changelog for package cloudwatch_logger
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2019-09-06)
+------------------
 * remove changelog for new release (`#8 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/8>`_)
 * Bump version to 3.0.0, add CHANGELOG and missing dependencies
 * add log node unit test (`#5 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/5>`_)
