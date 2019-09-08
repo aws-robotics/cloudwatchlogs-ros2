@@ -24,8 +24,6 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_CXX_FLAGS}")
 
 find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_gtest REQUIRED)
-find_package(ament_cmake_gmock REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcl_interfaces REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -110,34 +108,38 @@ ament_package()
 ## Tests ##
 #############
 
-ament_add_gmock(test_log_node
-        test/log_node_test.cpp
-        )
-target_include_directories(test_log_node PRIVATE
-        include
-        ${cloudwatch_logs_common_INCLUDE_DIRS}
-        ${dataflow_lite_INCLUDE_DIRS}
-        ${file_management_INCLUDE_DIRS}
-        ${AWSSDK_INCLUDE_DIRS}
-        ${aws_common_INCLUDE_DIRS}
-        ${rclcpp_INCLUDE_DIRS}
-        )
-target_link_libraries(test_log_node
-        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-        )
+if(BUILD_TESTING)
+  find_package(ament_cmake_gmock REQUIRED)
+  
+  ament_add_gmock(test_log_node
+          test/log_node_test.cpp
+          )
+  target_include_directories(test_log_node PRIVATE
+          include
+          ${cloudwatch_logs_common_INCLUDE_DIRS}
+          ${dataflow_lite_INCLUDE_DIRS}
+          ${file_management_INCLUDE_DIRS}
+          ${AWSSDK_INCLUDE_DIRS}
+          ${aws_common_INCLUDE_DIRS}
+          ${rclcpp_INCLUDE_DIRS}
+          )
+  target_link_libraries(test_log_node
+          ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+          )
 
-ament_add_gmock(test_log_node_param_helper
-        test/log_node_param_helper_test.cpp
-        )
-target_include_directories(test_log_node_param_helper PRIVATE
-        include
-        ${cloudwatch_logs_common_INCLUDE_DIRS}
-        ${dataflow_lite_INCLUDE_DIRS}
-        ${file_management_INCLUDE_DIRS}
-        ${AWSSDK_INCLUDE_DIRS}
-        ${aws_common_INCLUDE_DIRS}
-        ${rclcpp_INCLUDE_DIRS}
-        )
-target_link_libraries(test_log_node_param_helper
-        ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
-        )
+  ament_add_gmock(test_log_node_param_helper
+          test/log_node_param_helper_test.cpp
+          )
+  target_include_directories(test_log_node_param_helper PRIVATE
+          include
+          ${cloudwatch_logs_common_INCLUDE_DIRS}
+          ${dataflow_lite_INCLUDE_DIRS}
+          ${file_management_INCLUDE_DIRS}
+          ${AWSSDK_INCLUDE_DIRS}
+          ${aws_common_INCLUDE_DIRS}
+          ${rclcpp_INCLUDE_DIRS}
+          )
+  target_link_libraries(test_log_node_param_helper
+          ${CLOUDWATCH_LOGGER_LIBRARY_TARGET}
+          )
+endif()
