@@ -86,7 +86,7 @@ _Note: If building the master branch instead of a release branch you may need to
 
         source ~/ros-workspace/install/setup.bash
 
-- Build and run the unit tests
+- Run the unit tests
 
         colcon test --packages-select cloudwatch_logs_common && colcon test-result --all
 
