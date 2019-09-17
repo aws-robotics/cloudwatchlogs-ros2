@@ -1,8 +1,5 @@
 # cloudwatch_logger
 
-**Note: this repository is under active development. The package provided here is a release candidate; 
-the API may change without notice and no support is provided for it at the moment.**
-
 ## Overview
 The **`cloudwatch_logger`** node enables logs generated in a ROS system to get sent to AWS CloudWatch Logs.
 Out of the box, this node provides the ability to subscribe to the **`/rosout`**  topic, which all logs
