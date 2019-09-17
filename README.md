@@ -1,8 +1,5 @@
 # cloudwatch_logger
 
-**Note: this repository is under active development. The package provided here is a release candidate; 
-the API may change without notice and no support is provided for it at the moment.**
-
 ## Overview
 The **`cloudwatch_logger`** node enables logs generated in a ROS system to get sent to AWS CloudWatch Logs.
 Out of the box, this node provides the ability to subscribe to the **`/rosout`**  topic, which all logs
@@ -87,11 +84,11 @@ _Note: If building the master branch instead of a release branch you may need to
 
 - Configure ROS library Path
 
-        source ~/ros-workspace/install/setup.bash
+        source ~/ros-workspace/install/local_setup.bash
 
-- Build and run the unit tests
+- Run the unit tests
 
-        colcon test --packages-select cloudwatch_logs_common && colcon test-result --all
+        colcon test && colcon test-result --all
 
 
 ## Launch Files
