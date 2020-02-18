@@ -25,7 +25,10 @@
 #include <cloudwatch_logs_common/log_service.h>
 #include <rclcpp/rclcpp.hpp>
 
-using namespace Aws::CloudWatchLogs::Utils;
+
+namespace Aws {
+namespace CloudWatchLogs {
+namespace Utils {
 
 LogNode::LogNode(int8_t min_log_severity, std::unordered_set<std::string> ignore_nodes)
   : ignore_nodes_(std::move(ignore_nodes))
@@ -137,3 +140,7 @@ const std::string LogNode::FormatLogs(const rcl_interfaces::msg::Log::SharedPtr&
 
   return ss.str();
 }
+
+}  // namespace Utils
+}  // namespace CloudWatchLogs
+}  // namespace Aws
