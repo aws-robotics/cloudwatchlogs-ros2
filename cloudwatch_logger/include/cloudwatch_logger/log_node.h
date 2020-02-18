@@ -41,11 +41,13 @@ public:
    * @param ignore_nodes The set of node names to ignore logs from
    */
   explicit LogNode(int8_t min_log_severity, std::unordered_set<std::string> ignore_nodes);
+  LogNode(const LogNode & other) = delete;
+  LogNode & operator=(const LogNode & other) = delete;
 
   /**
    *  @brief Tears down a AWSCloudWatchLogNode object
    */
-  ~LogNode();
+  ~LogNode() override;
 
   /**
    * @brief Reads creds, region, and SDK option to configure log manager
@@ -59,7 +61,7 @@ public:
   void Initialize(const std::string & log_group, const std::string & log_stream,
                   const Aws::Client::ClientConfiguration & config, Aws::SDKOptions & sdk_options,
                   const Aws::CloudWatchLogs::CloudWatchOptions & cloudwatch_options,
-                  std::shared_ptr<LogServiceFactory> log_service_factory = std::make_shared<LogServiceFactory>());
+                  const std::shared_ptr<LogServiceFactory>& log_service_factory = std::make_shared<LogServiceFactory>());
 
   bool start() override;
   bool shutdown() override;
@@ -69,7 +71,7 @@ public:
    *
    * @param log_msg A log message from the subscribed topic(s)
    */
-  void RecordLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg);
+  void RecordLogs(const rcl_interfaces::msg::Log::SharedPtr& log_msg);
 
   /**
    * @brief Trigger the log manager to call its Service function to publish logs to cloudwatch
@@ -90,7 +92,7 @@ public:
 
 private:
   bool ShouldSendToCloudWatchLogs(const int8_t log_severity_level);
-  const std::string FormatLogs(const rcl_interfaces::msg::Log::SharedPtr log_msg);
+  const std::string FormatLogs(const rcl_interfaces::msg::Log::SharedPtr& log_msg);
   std::shared_ptr<Aws::CloudWatchLogs::LogService> log_service_;
   int8_t min_log_severity_;
   std::unordered_set<std::string> ignore_nodes_;
