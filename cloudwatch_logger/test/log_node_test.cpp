@@ -22,9 +22,11 @@
 #include <cloudwatch_logs_common/log_publisher.h>
 #include <cloudwatch_logs_common/log_service_factory.h>
 #include <rcl_interfaces/msg/log.hpp>
+#include <utility>
 
 using namespace Aws::CloudWatchLogs;
 using namespace Aws::CloudWatchLogs::Utils;
+using namespace Aws::FileManagement;
 using ::testing::_;
 using ::testing::AllOf;
 using ::testing::HasSubstr;
@@ -69,7 +71,7 @@ public:
   LogServiceMock(std::shared_ptr<Publisher<LogCollection>> log_publisher,
                  std::shared_ptr<DataBatcher<LogType>> log_batcher,
                  std::shared_ptr<FileUploadStreamer<LogCollection>> log_file_upload_streamer = nullptr)
-    : LogService(log_publisher, log_batcher, log_file_upload_streamer) {}
+    : LogService(std::move(log_publisher), std::move(log_batcher), std::move(log_file_upload_streamer)) {}
 
   MOCK_METHOD1(batchData, bool(const std::string & data_to_batch));
   MOCK_METHOD0(start, bool());
