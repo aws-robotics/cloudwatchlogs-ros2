@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <package format="3">
   <name>cloudwatch_logger</name>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <description>CloudWatch Logger node for publishing logs to AWS CloudWatch Logs</description>
   <author email="ros-contributions@amazon.com">AWS RoboMaker</author>
   <maintainer email="ros-contributions@amazon.com">AWS RoboMaker</maintainer>
