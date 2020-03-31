@@ -2,6 +2,14 @@
 Changelog for package cloudwatch_logger
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bump package version to 3.0.1 (`#14 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/14>`_)
+* Fix linting issues found by clang-tidy 6.0 (`#12 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/12>`_)
+  * clang-tidy fixes
+  * clang-tidy linting issues fixed manually
+* Contributors: Miaofei Mei, Ryan Newell
+
 3.0.0 (2019-09-06)
 ------------------
 * remove changelog for new release (`#8 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/8>`_)
