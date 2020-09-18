@@ -129,7 +129,6 @@ An example configuration file called `sample_configuration.yaml` is provided. Wh
 | min_log_verbosity| The minimum log severity for sending logs selectively to AWS CloudWatch Logs, log messages with a severity lower than `min_log_verbosity` will be ignored | *std::string* | DEBUG/INFO/WARN/ERROR/FATAL | DEBUG |
 | storage_directory | The location where all offline metrics will be stored | *string* | string | ~/.ros/cwlogs/ |
 | storage_limit | The maximum size of all offline storage files in KB. Once this limit is reached offline logs will start to be deleted oldest first. | *int* | number | 1048576 |
-| delete_stale_data | Whether or not to delete log batch data that are over 14 days old, which are rejected by [AWS PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html). | *bool* | true/false | false |
 | aws_client_configuration | AWS region configuration | *std::string* | *region*: "us-west-2"/"us-east-1"/"us-east-2"/etc. | region: us-west-2 |
 
 ### Advanced Configuration Parameters
