@@ -2,8 +2,8 @@
 Changelog for package cloudwatch_logger
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.2 (2020-09-18)
+------------------
 * add delete_stale_data and unit tests (`#15 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/15>`_)
 * Bump package version to 3.0.1 (`#14 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/14>`_)
 * Fix linting issues found by clang-tidy 6.0 (`#12 <https://github.com/aws-robotics/cloudwatchlogs-ros2/issues/12>`_)
