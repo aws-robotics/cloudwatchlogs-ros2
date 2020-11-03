@@ -1,0 +1,5 @@
+repositories:
+  cloudwatchlogs-ros2:
+    type: git
+    url: https://github.com/aws-robotics/cloudwatchlogs-ros2
+    version: release-latest
