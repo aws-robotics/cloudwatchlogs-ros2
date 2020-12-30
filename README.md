@@ -33,9 +33,6 @@ The source code is released under an [Apache 2.0].
      * master: [![Build & Test](https://github.com/aws-robotics/cloudwatchlogs-ros2/workflows/Build%20&%20Test/badge.svg?branch=master&event=schedule)](https://github.com/aws-robotics/cloudwatchlogs-ros2/actions?query=workflow%3A"Build+%26+Test"+event%3Aschedule)
      * release-latest: [![Build & Test release-latest](https://github.com/aws-robotics/cloudwatchlogs-ros2/workflows/Build%20&%20Test%20release-latest/badge.svg?branch=master&event=schedule)](https://github.com/aws-robotics/cloudwatchlogs-ros2/actions?query=workflow%3A"Build+%26+Test+release-latest"+event%3Aschedule)
 
-* Travis CI:
-    * "master" branch [![Build Status](https://travis-ci.org/aws-robotics/cloudwatchlogs-ros2.svg?branch=master)](https://travis-ci.org/aws-robotics/cloudwatchlogs-ros2/branches)
-    * "release-latest" branch [![Build Status](https://travis-ci.org/aws-robotics/cloudwatchlogs-ros2.svg?branch=release-latest)](https://travis-ci.org/aws-robotics/cloudwatchlogs-ros2/branches)
 * ROS build farm:
     * ROS2 Dashing @ u18.04 Bionic [![Build Status](http://build.ros2.org/job/Dbin_uB64__cloudwatch_logger__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros2.org/job/Dbin_uB64__cloudwatch_logger__ubuntu_bionic_amd64__binary)
 
